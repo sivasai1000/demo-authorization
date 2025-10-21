@@ -8,18 +8,19 @@ const {
   deleteProduct,
 } = require("../controllers/productController");
 
-// ✅ Middleware to check session
-const checkSession = (req, res, next) => {
-  if (!req.session.user) return res.status(401).json({ message: "Login required" });
-  next();
-};
+// ✅ Add product
+router.post("/add", addProduct);
 
-router.use(checkSession); // all routes below require login
+// ✅ Get all products for a user
+router.post("/list", getProducts);
 
-router.post("/", addProduct);
-router.get("/", getProducts);
-router.get("/:id", getProductById);
-router.put("/:id", updateProduct);
-router.delete("/:id", deleteProduct);
+// ✅ Get product by ID using :id
+router.post("/get/:id", getProductById);
+
+// ✅ Update product
+router.post("/update", updateProduct);
+
+// ✅ Delete product using :id
+router.post("/delete/:id", deleteProduct);
 
 module.exports = router;
