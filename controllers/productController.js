@@ -34,11 +34,12 @@ exports.getProducts = async (req, res) => {
   }
 };
 
-// ✅ Get product by ID for a user
 exports.getProductById = async (req, res) => {
   try {
     const { user_id } = req.body;
     const { id } = req.params;
+
+    console.log("Incoming request:", { id, user_id });
 
     if (!user_id) return res.status(400).json({ message: "user_id is required" });
 
@@ -47,13 +48,17 @@ exports.getProductById = async (req, res) => {
       [id, user_id]
     );
 
+    console.log("Query result:", rows);
+
     if (rows.length === 0) return res.status(404).json({ message: "Product not found" });
+
     res.status(200).json(rows[0]);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    console.error("🔥 Database Error:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
 
 // ✅ Update product
 exports.updateProduct = async (req, res) => {
