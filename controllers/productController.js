@@ -13,8 +13,6 @@ exports.addProduct = async (req, res) => {
       [user_id, name, price, description]
     );
 
-    console.log("Product added:", result);
-
     res.status(201).json({ message: "Product added", product_id: result.insertId });
   } catch (err) {
     console.error(err);
@@ -25,8 +23,7 @@ exports.addProduct = async (req, res) => {
 // ✅ Get all products for a user
 exports.getProducts = async (req, res) => {
   try {
-    const { user_id } = req.body;
-
+    const { user_id } = req.body; // frontend must send user_id
     if (!user_id) return res.status(400).json({ message: "user_id is required" });
 
     const [rows] = await pool.query("SELECT * FROM products WHERE user_id = ?", [user_id]);
@@ -37,10 +34,11 @@ exports.getProducts = async (req, res) => {
   }
 };
 
+// ✅ Get product by ID for a user
 exports.getProductById = async (req, res) => {
   try {
     const { user_id } = req.body;
-    const { id } = req.params; // product ID from URL
+    const { id } = req.params;
 
     if (!user_id) return res.status(400).json({ message: "user_id is required" });
 
@@ -57,14 +55,12 @@ exports.getProductById = async (req, res) => {
   }
 };
 
-
 // ✅ Update product
 exports.updateProduct = async (req, res) => {
   try {
-    const { user_id, product_id, name, price, description } = req.body;
+    const { user_id, name, price, description, product_id } = req.body;
 
-    if (!user_id) return res.status(400).json({ message: "user_id is required" });
-    if (!product_id) return res.status(400).json({ message: "product_id is required" });
+    if (!user_id || !product_id) return res.status(400).json({ message: "user_id and product_id required" });
 
     const [existing] = await pool.query(
       "SELECT * FROM products WHERE product_id = ? AND user_id = ?",
@@ -89,7 +85,7 @@ exports.updateProduct = async (req, res) => {
 exports.deleteProduct = async (req, res) => {
   try {
     const { user_id } = req.body;
-    const { id } = req.params; // product ID from URL
+    const { id } = req.params;
 
     if (!user_id) return res.status(400).json({ message: "user_id is required" });
 
@@ -100,15 +96,10 @@ exports.deleteProduct = async (req, res) => {
 
     if (existing.length === 0) return res.status(404).json({ message: "Product not found" });
 
-    await pool.query(
-      "DELETE FROM products WHERE product_id = ? AND user_id = ?",
-      [id, user_id]
-    );
-
+    await pool.query("DELETE FROM products WHERE product_id = ? AND user_id = ?", [id, user_id]);
     res.status(200).json({ message: "Product deleted" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 };
-

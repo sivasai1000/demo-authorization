@@ -8,7 +8,7 @@ exports.registerUser = async (req, res) => {
     if (!name || !email || !password)
       return res.status(400).json({ message: "All fields required." });
 
-    const [existing] = await pool.query("SELECT * FROM user WHERE email = ?", [email]);//row,colum
+    const [existing] = await pool.query("SELECT * FROM user WHERE email = ?", [email]);
     if (existing.length > 0)
       return res.status(400).json({ message: "Email already exists." });
 
@@ -19,9 +19,10 @@ exports.registerUser = async (req, res) => {
       [name, email, hashedPassword]
     );
 
-    req.session.user = {  name, email };
-
-    res.status(201).json({ message: "User registered ", user: req.session.user });
+    res.status(201).json({
+      message: "User registered",
+      user: { id: result.insertId, name, email } // return user_id
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
@@ -43,18 +44,12 @@ exports.loginUser = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(401).json({ message: "Invalid credentials" });
 
-    // save user in session
-    req.session.user = { id: user.id, name: user.name, email: user.email };
-
-    res.status(200).json({ message: "Login successful", user: req.session.user });
+    res.status(200).json({
+      message: "Login successful",
+      user: { id: user.id, name: user.name, email: user.email } // return user_id
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
   }
-};
-
-// ✅ Logout user
-exports.logoutUser = (req, res) => {
-  req.session.destroy();
-  res.status(200).json({ message: "Logout successful" });
 };

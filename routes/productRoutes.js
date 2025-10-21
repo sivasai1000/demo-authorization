@@ -8,19 +8,11 @@ const {
   deleteProduct,
 } = require("../controllers/productController");
 
-// ✅ Add product
-router.post("/add", addProduct);
-
-// ✅ Get all products for a user
-router.post("/list", getProducts);
-
-// ✅ Get product by ID using :id
-router.post("/get/:id", getProductById);
-
-// ✅ Update product
-router.post("/update", updateProduct);
-
-// ✅ Delete product using :id
-router.post("/delete/:id", deleteProduct);
+// Routes
+router.post("/add", addProduct);        // add product
+router.post("/list", getProducts);      // get all products for user
+router.post("/get/:id", getProductById); // get product by id
+router.post("/update", updateProduct);  // update product (send user_id + product_id)
+router.post("/delete/:id", deleteProduct); // delete product
 
 module.exports = router;
