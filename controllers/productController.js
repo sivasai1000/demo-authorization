@@ -1,6 +1,5 @@
 const pool = require("../config/db");
 
-// ✅ Add product
 exports.addProduct = async (req, res) => {
   try {
     const { user_id, name, price, description } = req.body;
@@ -20,10 +19,10 @@ exports.addProduct = async (req, res) => {
   }
 };
 
-// ✅ Get all products for a user
+
 exports.getProducts = async (req, res) => {
   try {
-    const { user_id } = req.body; // frontend must send user_id
+    const { user_id } = req.body; 
     if (!user_id) return res.status(400).json({ message: "user_id is required" });
 
     const [rows] = await pool.query("SELECT * FROM products WHERE user_id = ?", [user_id]);
@@ -63,7 +62,8 @@ exports.getProductById = async (req, res) => {
 // ✅ Update product
 exports.updateProduct = async (req, res) => {
   try {
-    const { user_id, name, price, description, product_id } = req.body;
+    const {  product_id } = req.params;
+    const { user_id, name, price, description } = req.body;
 
     if (!user_id || !product_id) return res.status(400).json({ message: "user_id and product_id required" });
 
