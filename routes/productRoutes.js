@@ -12,7 +12,7 @@ const {
 router.post("/add", addProduct);        // add product
 router.post("/list", getProducts);      // get all products for user
 router.post("/get/:id", getProductById); // get product by id
-router.post("/update/:id", updateProduct);  // update product (send user_id + product_id)
+router.post("/update/:product_id", updateProduct);  // update product (send user_id + product_id)
 router.post("/delete/:id", deleteProduct); // delete product
 
 module.exports = router;
