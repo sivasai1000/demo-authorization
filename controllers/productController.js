@@ -65,7 +65,7 @@ exports.updateProduct = async (req, res) => {
     const {  product_id } = req.params;
     const { user_id, name, price, description } = req.body;
 
-    if (!user_id || !product_id) return res.status(400).json({ message: "user_id and product_id required" });
+    if (!user_id ) return res.status(400).json({ message: "user_id required" });
 
     const [existing] = await pool.query(
       "SELECT * FROM products WHERE product_id = ? AND user_id = ?",
